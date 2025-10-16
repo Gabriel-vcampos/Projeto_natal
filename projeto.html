@@ -79,14 +79,12 @@
 
         /* Tree Container - Corrigido */
         .tree-container {
-            position: absolute;
-            bottom: 5vh;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100vw;
-            max-width: 1000px;
-            height: auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50rem;
             z-index: 2;
+            position: relative;
         }
 
         /* Tree - z-index: 2 */
@@ -95,6 +93,28 @@
             height: auto;
             filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
             display: block;
+        }
+
+        /* Imagem à direita - Nova adição */
+        .right-decoration {
+            position: absolute;
+            right: 7%;
+            top: 40%;
+            width: 25%;
+            max-width: 480px;
+            height: 60%;
+            z-index: 3;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Animação de balanço INFINITA para as bolas no hover */
+        @keyframes ballSwingInfinite {
+            0%, 100% {
+                transform: rotate(-8deg);
+            }
+            50% {
+                transform: rotate(4deg);
+            }
         }
 
         /* Efeito de brilho sutil para as bolas (estado normal) */
@@ -140,9 +160,7 @@
         .gift {
             position: absolute;
             bottom: -2vh;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 35%;
+            width: 30%;
             height: auto;
             z-index: 3;
             cursor: pointer;
@@ -152,7 +170,7 @@
         }
 
         .gift:hover {
-            transform: translateX(-50%) scale(1.1);
+            transform: scale(1.1);
             animation: giftGlow 1.5s ease-in-out infinite;
         }
 
@@ -162,15 +180,16 @@
             width: 5%;
             height: auto;
             z-index: 5;
-            transition: transform 0.3s ease;
             cursor: pointer;
             animation: subtleGlow 3s ease-in-out infinite;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            transform-origin: top center; /* Ponto de origem para o balanço */
+            transition: all 0.3s ease;
         }
 
+        /* Efeito de balanço INFINITO quando passa o mouse */
         .ball:hover {
-            transform: scale(1.1);
-            animation: strongGlow 2s ease-in-out infinite;
+            animation: ballSwingInfinite 1.5s ease-in-out infinite, strongGlow 2s ease-in-out infinite;
         }
 
         /* Posições das bolas relativas à árvore - Corrigidas e melhoradas */
@@ -395,6 +414,55 @@
             box-shadow: 0 6px 16px rgba(120, 0, 0, 0.4);
         }
 
+        /* Modal de Bloqueio - Estilo específico */
+        .blocked-modal .modal-content {
+            background: linear-gradient(180deg, #fff0f0 0%, #ffe6e6 100%);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .blocked-modal .modal-title {
+            color: rgba(27, 123, 62, 1);
+            font-size: 2.2rem;
+        }
+
+        .angry-image {
+            width: 200px;
+            height: 280px;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+
+        }
+
+        .angry-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .x-icon {
+            font-size: 3rem;
+            color: #cc0000;
+            margin: 1rem 0;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .blocked-text {
+            font-size: 1.2rem;
+            color: #cc0000;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .title {
@@ -408,6 +476,11 @@
             
             .ball {
                 width: 14%;
+            }
+            
+            .right-decoration {
+                width: 35%;
+                right: 5%;
             }
             
             .modal-content {
@@ -431,6 +504,11 @@
             .carousel-slide {
                 height: 180px;
             }
+
+            .angry-image {
+                width: 120px;
+                height: 120px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -451,6 +529,11 @@
                 width: 30%;
             }
             
+            .right-decoration {
+                width: 40%;
+                right: 2%;
+            }
+            
             .modal-photo-frame {
                 max-width: 200px;
                 height: 140px;
@@ -469,6 +552,15 @@
                 width: 35px;
                 height: 35px;
                 font-size: 16px;
+            }
+
+            .angry-image {
+                width: 100px;
+                height: 100px;
+            }
+
+            .blocked-text {
+                font-size: 1.1rem;
             }
         }
 
@@ -523,7 +615,10 @@
         
         <!-- Gift - Agora com carrossel -->
         <img src="image/presente.png" alt="Presente Especial" class="gift" 
-             onclick="openGiftModal()">
+             onclick="checkDateAndOpenGift()">
+        
+        <!-- Imagem decorativa à direita - Nova adição -->
+        <img src="image/casal.png" alt="Decoração Natalina" class="right-decoration">
     </div>
     
     <!-- Modal Normal -->
@@ -562,6 +657,23 @@
         </div>
     </div>
 
+    <!-- Modal de Bloqueio -->
+    <div id="blocked-modal" class="modal blocked-modal" onclick="closeBlockedModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">Ta achando que me engana? 🎅</h2>
+            
+            <div class="angry-image">
+                <img src="image/eu_irritado.png" alt="Estou bravo!">
+            </div>
+            
+            <div class="x-icon">❌</div>
+            
+            <p class="blocked-text">Mor para de ser ansiosa e espera um pouquinho 🙄<br>Vai poder abrir no dia 24 e 25 de dezembro 🎄</p>
+            
+            <button class="modal-close" onclick="closeBlockedModal()">Entendi mor!</button>
+        </div>
+    </div>
+
     <script>
         // Snow Animation
         function initializeSnow() {
@@ -589,6 +701,25 @@
             setInterval(createSnowflake, 300);
         }
 
+        // Função para verificar se é Natal
+        function isChristmasTime() {
+            const today = new Date();
+            const month = today.getMonth() + 1; // Janeiro é 0
+            const day = today.getDate();
+            
+            // Verifica se é 24 ou 25 de dezembro
+            return (month === 12 && (day === 24 || day === 25));
+        }
+
+        // Função para verificar data e abrir o presente apropriado
+        function checkDateAndOpenGift() {
+            if (isChristmasTime()) {
+                openGiftModal();
+            } else {
+                openBlockedModal();
+            }
+        }
+
         // Modal Functions - Para modais normais
         function openModal(title, text, photoUrl) {
             const modal = document.getElementById('modal');
@@ -609,6 +740,21 @@
             if (event && event.target !== event.currentTarget) return;
             
             const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        // Modal de Bloqueio
+        function openBlockedModal() {
+            const modal = document.getElementById('blocked-modal');
+            modal.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+
+        function closeBlockedModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('blocked-modal');
             modal.classList.remove('active');
             document.body.classList.remove('no-scroll');
         }
@@ -704,6 +850,10 @@
                     if (e.key === 'ArrowRight') nextSlide();
                 }
             });
+
+            // Mostrar no console se é natal (para teste)
+            console.log('É natal?', isChristmasTime());
+            console.log('Data atual:', new Date().toLocaleDateString());
         });
 
         // Keyboard Navigation para fechar modais
@@ -711,6 +861,7 @@
             if (e.key === 'Escape') {
                 closeModal();
                 closeGiftModal();
+                closeBlockedModal();
             }
         });
 
