@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Natal Mágico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Background Layer - z-index: 0 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url(background.jpg) center/cover no-repeat;
+            z-index: 0;
+        }
+
+        /* Overlay Layer - z-index: 1 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #780000;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        /* Snow Animation */
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100vh) translateX(0px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            user-select: none;
+            pointer-events: none;
+            animation: snowfall linear infinite;
+            z-index: 10;
+        }
+
+        /* Title - z-index: 4 */
+        .title {
+            position: absolute;
+            top: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Great Vibes';
+            font-size: 5vw;
+            color: #FFF2E1;
+            z-index: 4;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        /* Tree Container - Corrigido */
+        .tree-container {
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            max-width: 1000px;
+            height: auto;
+            z-index: 2;
+        }
+
+        /* Tree - z-index: 2 */
+        .tree {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+            display: block;
+        }
+
+        /* Efeito de brilho sutil para as bolas (estado normal) */
+        @keyframes subtleGlow {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+        }
+
+        /* Efeito de brilho mais intenso (hover) */
+        @keyframes strongGlow {
+            0% {
+                filter: drop-shadow(0 0 5px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 12px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 5px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            }
+        }
+
+        /* Efeito de brilho sutil para o presente */
+        @keyframes giftGlow {
+            0% {
+                filter: drop-shadow(0 0 2px rgba(27, 123, 62, 0.15)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 6px rgba(27, 123, 62, 0.25)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 2px rgba(27, 123, 62, 0.15)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+        }
+
+        /* Gift - z-index: 3 */
+        .gift {
+            position: absolute;
+            bottom: -2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35%;
+            height: auto;
+            z-index: 3;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: giftGlow 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .gift:hover {
+            transform: translateX(-50%) scale(1.1);
+            animation: giftGlow 1.5s ease-in-out infinite;
+        }
+
+        /* Balls - z-index: 5 - Com efeito de brilho sutil */
+        .ball {
+            position: absolute;
+            width: 5%;
+            height: auto;
+            z-index: 5;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            animation: subtleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .ball:hover {
+            transform: scale(1.1);
+            animation: strongGlow 2s ease-in-out infinite;
+        }
+
+        /* Posições das bolas relativas à árvore - Corrigidas e melhoradas */
+        .ball-1 { top: 22%; left: 46%; }
+        .ball-2 { top: 40%; left: 45%; }
+        .ball-3 { top: 34%; left: 51%; }
+        .ball-4 { top: 50%; left: 40%; }
+        .ball-5 { top: 50%; left: 55%; }
+        .ball-6 { top: 66%; left: 36%; }
+        .ball-7 { top: 62%; left: 58%; }
+        .ball-8 { top: 56%; left: 48%; }
+
+        /* Modal - Atualizado com espaço para foto */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(180deg, #fffdf8 0%, #fff7e6 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            animation: modalEnter 0.3s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #780000;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Moldura da foto - Estilo natalino (para modais normais) */
+        .modal-photo-frame {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            border: 8px solid #780000;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #780000, #a00000);
+            padding: 4px;
+            box-shadow: 0 8px 20px rgba(120, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            z-index: -1;
+            border-radius: 12px;
+        }
+
+        .modal-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+
+        /* CARROSSEL PARA O PRESENTE ESPECIAL */
+        .carousel-container {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(120, 0, 0, 0.4);
+            border: 6px solid #780000;
+            background: linear-gradient(45deg, #780000, #a00000);
+        }
+
+        .carousel::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            z-index: -1;
+            border-radius: 12px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 200px;
+        }
+
+        .carousel-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            color: #780000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-button:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-prev {
+            left: 10px;
+        }
+
+        .carousel-next {
+            right: 10px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 8px;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background: #780000;
+            transform: scale(1.2);
+        }
+
+        .modal-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .modal-close {
+            background: linear-gradient(135deg, #780000, #a00000);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(120, 0, 0, 0.3);
+        }
+
+        .modal-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(120, 0, 0, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 8vw;
+                top: 3vh;
+            }
+            
+            .tree-container {
+                width: 90vw;
+            }
+            
+            .ball {
+                width: 14%;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .modal-title {
+                font-size: 2rem;
+            }
+            
+            .modal-photo-frame {
+                max-width: 250px;
+                height: 170px;
+            }
+
+            .carousel-container {
+                max-width: 280px;
+            }
+            
+            .carousel-slide {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 10vw;
+                top: 2vh;
+            }
+            
+            .tree-container {
+                width: 95vw;
+            }
+            
+            .ball {
+                width: 16%;
+            }
+            
+            .gift {
+                width: 30%;
+            }
+            
+            .modal-photo-frame {
+                max-width: 200px;
+                height: 140px;
+                border-width: 6px;
+            }
+
+            .carousel-container {
+                max-width: 230px;
+            }
+            
+            .carousel-slide {
+                height: 150px;
+            }
+            
+            .carousel-button {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+
+        /* Classe para bloquear rolagem */
+        .no-scroll {
+            overflow: hidden !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Layer -->
+    <div class="background"></div>
+    
+    <!-- Overlay Layer -->
+    <div class="overlay"></div>
+    
+    <!-- Snow Container -->
+    <div id="snow-container"></div>
+    
+    <!-- Title -->
+    <h1 class="title">Nosso natal mágico</h1>
+    
+    <!-- Tree Container -->
+    <div class="tree-container">
+        <!-- Tree Image -->
+        <img src="arvore.png" alt="Árvore de Natal" class="tree">
+        
+        <!-- Christmas Balls -->
+        <img src="ball1.svg" alt="Bola Vermelha" class="ball ball-1" 
+             onclick="openModal('Nossa Primeira Foto Juntos 📸', 'Lembra deste momento especial? Foi quando tudo começou... Nossos sorrisos tímidos, mas cheios de esperança. Cada olhar já dizia tanto sobre o futuro que construiríamos juntos.', 'foto.png')">
+        
+        <img src="ball2.svg" alt="Bola Azul" class="ball ball-2" 
+             onclick="openModal('Nosso Primeiro Natal 🎄', 'O primeiro de muitos Natais juntos. Decoramos nossa primeira árvore, trocamos presentes simples mas cheios de amor. Foi quando soubemos que todos os Natais futuros seriam mais especiais ao seu lado.', 'foto.png')">
+        
+        <img src="ball3.svg" alt="Bola Verde" class="ball ball-3" 
+             onclick="openModal('Viagem dos Sonhos ✈️', 'Aquela viagem inesquecível onde descobrimos novos lugares e criamos memórias que guardaremos para sempre. Cada pôr do sol, cada risada, cada momento de descoberta juntos.', 'foto3.jpg')">
+        
+        <img src="ball4.svg" alt="Bola Roxa" class="ball ball-4" 
+             onclick="openModal('Momento Inesquecível 💕', 'Aquele dia que mudou tudo. Quando olhamos um para o outro e soubemos que era para sempre. Um momento simples que se tornou extraordinário porque estávamos juntos.', 'foto4.jpg')">
+        
+        <img src="ball5.svg" alt="Bola Amarela" class="ball ball-5" 
+             onclick="openModal('Nossos Sonhos 🌟', 'Todas as conversas sobre o futuro, os planos que fizemos, os sonhos que compartilhamos. Cada objetivo se tornou mais alcançável porque temos um ao outro para apoiar e celebrar.', 'foto5.jpg')">
+        
+        <img src="ball6.svg" alt="Bola Laranja" class="ball ball-6" 
+             onclick="openModal('Nossas Conquistas 🏆', 'Cada desafio superado, cada vitória conquistada juntos. Lembra daqueles momentos em que pensamos que não iríamos conseguir, mas unindo forças mostramos que juntos somos invencíveis.', 'foto6.jpg')">
+        
+        <img src="ball7.svg" alt="Bola Rosa" class="ball ball-7" 
+             onclick="openModal('Nossa Casa dos Sonhos 🏠', 'Quando começamos a planejar nosso cantinho especial. Cada detalhe pensado com amor, cada cômodo imaginado com você ao meu lado. Nossa casa será o reflexo do nosso amor.', 'foto7.jpg')">
+
+        <img src="ball8.svg" alt="Bola Dourada Grande" class="ball ball-8" 
+             onclick="openModal('Nosso Futuro Juntos 💍', 'Todos os planos que temos, todos os sonhos que compartilhamos. Um futuro brilhante nos espera, cheio de amor, cumplicidade e momentos inesquecíveis que ainda vamos criar juntos.', 'foto8.jpg')">
+        
+        <!-- Gift - Agora com carrossel -->
+        <img src="presente.png" alt="Presente Especial" class="gift" 
+             onclick="openGiftModal()">
+    </div>
+    
+    <!-- Modal Normal -->
+    <div id="modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 id="modal-title" class="modal-title"></h2>
+            <div class="modal-photo-frame">
+                <img id="modal-photo" class="modal-photo" src="" alt="Foto especial">
+            </div>
+            <p id="modal-text" class="modal-text"></p>
+            <button class="modal-close" onclick="closeModal()">❄️ Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal do Presente com Carrossel -->
+    <div id="gift-modal" class="modal" onclick="closeGiftModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">Presente Especial 🎁</h2>
+            
+            <!-- Carrossel -->
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-track">
+                        <!-- As imagens serão inseridas via JavaScript -->
+                    </div>
+                    <button class="carousel-button carousel-prev">&#10094;</button>
+                    <button class="carousel-button carousel-next">&#10095;</button>
+                </div>
+                <div class="carousel-indicators">
+                    <!-- Os indicadores serão inseridos via JavaScript -->
+                </div>
+            </div>
+            
+            <p class="modal-text">Aqui estão todos os presentes especiais que preparei para você! Cada um foi escolhido com muito amor e carinho, pensando em tudo que você significa para mim. Navegue para ver todos! 💝</p>
+            <button class="modal-close" onclick="closeGiftModal()">❄️ Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // Snow Animation
+        function initializeSnow() {
+            const snowContainer = document.getElementById('snow-container');
+            const snowflakes = ['❄', '❅', '❆'];
+            
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                snowflake.style.opacity = Math.random() * 0.8 + 0.2;
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                
+                snowContainer.appendChild(snowflake);
+                
+                setTimeout(() => {
+                    if (snowflake.parentNode) {
+                        snowflake.remove();
+                    }
+                }, 5000);
+            }
+            
+            setInterval(createSnowflake, 300);
+        }
+
+        // Modal Functions - Para modais normais
+        function openModal(title, text, photoUrl) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalPhoto = document.getElementById('modal-photo');
+            
+            modalTitle.textContent = title;
+            modalText.textContent = text;
+            modalPhoto.src = photoUrl;
+            modalPhoto.alt = title;
+            
+            modal.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        // Carrossel do Presente
+        let currentSlide = 0;
+        const giftImages = [
+            'foto.png',
+            'foto.png', 
+            'foto.png',
+            'foto.png'
+        ];
+
+        function initializeCarousel() {
+            const track = document.querySelector('.carousel-track');
+            const indicators = document.querySelector('.carousel-indicators');
+            
+            // Limpa o carrossel
+            track.innerHTML = '';
+            indicators.innerHTML = '';
+            
+            // Adiciona as imagens ao carrossel
+            giftImages.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${image}" alt="Presente ${index + 1}" class="carousel-image">`;
+                track.appendChild(slide);
+                
+                // Cria os indicadores
+                const indicator = document.createElement('button');
+                indicator.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+                indicator.addEventListener('click', () => goToSlide(index));
+                indicators.appendChild(indicator);
+            });
+            
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.querySelector('.carousel-track');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            const slideWidth = document.querySelector('.carousel-slide').clientWidth;
+            
+            track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+            
+            // Atualiza indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % giftImages.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + giftImages.length) % giftImages.length;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Modal do Presente
+        function openGiftModal() {
+            const modal = document.getElementById('gift-modal');
+            initializeCarousel();
+            modal.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+
+        function closeGiftModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('gift-modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        // Event Listeners para os botões do carrossel
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.carousel-prev').addEventListener('click', prevSlide);
+            document.querySelector('.carousel-next').addEventListener('click', nextSlide);
+            
+            // Teclado para navegar no carrossel
+            document.addEventListener('keydown', function(e) {
+                const giftModal = document.getElementById('gift-modal');
+                if (giftModal.classList.contains('active')) {
+                    if (e.key === 'ArrowLeft') prevSlide();
+                    if (e.key === 'ArrowRight') nextSlide();
+                }
+            });
+        });
+
+        // Keyboard Navigation para fechar modais
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeGiftModal();
+            }
+        });
+
+        // Initialize Snow on Page Load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSnow();
+        });
+
+        // Prevent context menu on images
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
