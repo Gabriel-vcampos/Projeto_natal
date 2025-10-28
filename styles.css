@@ -1,0 +1,616 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    overflow-x: hidden; /* IMPORTANTE: Remove scroll horizontal */
+}
+
+/* Background Layer - z-index: 0 */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url(image/background.jpg) center/cover no-repeat;
+    z-index: 0;
+}
+
+/* Overlay Layer - z-index: 1 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #780000;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+/* Snow Animation */
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100vh) translateX(0px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) translateX(100px);
+        opacity: 0;
+    }
+}
+
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    user-select: none;
+    pointer-events: none;
+    animation: snowfall linear infinite;
+    z-index: 10;
+}
+
+/* Title - z-index: 4 */
+.title {
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Great Vibes';
+    font-size: 5vw;
+    color: #FFF2E1;
+    z-index: 4;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    margin: 0;
+}
+
+/* Tree Container - CORRIGIDO */
+.tree-container {
+    position: relative;
+    width: 100vw;
+    height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    margin-top: 5vh;
+    overflow: hidden; /* IMPORTANTE: Previne overflow */
+}
+
+/* Tree - CORRIGIDO PARA EVITAR ESPAÇO BRANCO */
+.tree {
+    height: 100%;
+    max-width: 90vw; /* LIMITA a largura máxima */
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+    display: block;
+}
+
+/* Imagem à direita - CORRIGIDA */
+.right-decoration {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-20%);
+    width: 25%;
+    max-width: 350px;
+    height: auto;
+    z-index: 3;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+/* Animação de balanço INFINITA para as bolas no hover */
+@keyframes ballSwingInfinite {
+    0%, 100% {
+        transform: rotate(-8deg);
+    }
+    50% {
+        transform: rotate(4deg);
+    }
+}
+
+/* Efeito de brilho sutil para as bolas (estado normal) */
+@keyframes subtleGlow {
+    0% {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    100% {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+}
+
+/* Efeito de brilho mais intenso (hover) */
+@keyframes strongGlow {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 12px rgba(255, 255, 100, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    100% {
+        filter: drop-shadow(0 0 5px rgba(255, 255, 100, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+}
+
+/* Efeito de brilho sutil para o presente */
+@keyframes giftGlow {
+    0% {
+        filter: drop-shadow(0 0 2px rgba(27, 123, 62, 0.15)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 6px rgba(27, 123, 62, 0.25)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+    100% {
+        filter: drop-shadow(0 0 2px rgba(27, 123, 62, 0.15)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+}
+
+/* Gift - CORRIGIDO */
+.gift {
+    position: absolute;
+    bottom: 2vh;
+    width: 25%;
+    height: auto;
+    z-index: 3;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    animation: giftGlow 4s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.gift:hover {
+    transform: scale(1.1);
+    animation: giftGlow 1.5s ease-in-out infinite;
+}
+
+/* Balls - CORRIGIDO - Com efeito de brilho sutil */
+.ball {
+    position: absolute;
+    width: 4%;
+    height: auto;
+    z-index: 5;
+    cursor: pointer;
+    animation: subtleGlow 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transform-origin: top center;
+    transition: all 0.3s ease;
+}
+
+/* Efeito de balanço INFINITO quando passa o mouse */
+.ball:hover {
+    animation: ballSwingInfinite 1.5s ease-in-out infinite, strongGlow 2s ease-in-out infinite;
+}
+
+/* Posições das bolas REAJUSTADAS */
+.ball-1 { top: 18%; left: 48%; }
+.ball-2 { top: 32%; left: 47%; }
+.ball-3 { top: 28%; left: 52%; }
+.ball-4 { top: 42%; left: 42%; }
+.ball-5 { top: 40%; left: 55%; }
+.ball-6 { top: 55%; left: 38%; }
+.ball-7 { top: 52%; left: 58%; }
+.ball-8 { top: 45%; left: 48%; }
+
+/* Modal - Atualizado com espaço para foto */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #fffdf8 0%, #fff7e6 100%);
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    animation: modalEnter 0.3s ease-out;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: #780000;
+    margin-bottom: 1.5rem;
+}
+
+/* Moldura da foto - Estilo natalino (para modais normais) */
+.modal-photo-frame {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    margin: 0 auto 1.5rem;
+    border: 8px solid #780000;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #780000, #a00000);
+    padding: 4px;
+    box-shadow: 0 8px 20px rgba(120, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-photo-frame::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+    z-index: -1;
+    border-radius: 12px;
+}
+
+.modal-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+/* CARROSSEL PARA O PRESENTE ESPECIAL */
+.carousel-container {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(120, 0, 0, 0.4);
+    border: 6px solid #780000;
+    background: linear-gradient(45deg, #780000, #a00000);
+}
+
+.carousel::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+    z-index: -1;
+    border-radius: 12px;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 200px;
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #780000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.carousel-button:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 8px;
+}
+
+.carousel-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ccc;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicator.active {
+    background: #780000;
+    transform: scale(1.2);
+}
+
+.modal-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.modal-close {
+    background: linear-gradient(135deg, #780000, #a00000);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(120, 0, 0, 0.3);
+}
+
+.modal-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(120, 0, 0, 0.4);
+}
+
+/* Modal de Bloqueio - Estilo específico */
+.blocked-modal .modal-content {
+    background: linear-gradient(180deg, #fff0f0 0%, #ffe6e6 100%);
+    border: 2px solid rgba(255, 0, 0, 0.3);
+}
+
+.blocked-modal .modal-title {
+    color: rgba(27, 123, 62, 1);
+    font-size: 2.2rem;
+}
+
+.angry-image {
+    width: 200px;
+    height: 280px;
+    margin: 0 auto 1.5rem;
+    overflow: hidden;
+}
+
+.angry-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.x-icon {
+    font-size: 3rem;
+    color: #cc0000;
+    margin: 1rem 0;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.blocked-text {
+    font-size: 1.2rem;
+    color: #cc0000;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Classe para bloquear rolagem */
+.no-scroll {
+    overflow: hidden !important;
+}
+
+/* RESPONSIVO PARA MOBILE - MELHORADO */
+@media (max-width: 870px) {
+
+    .tree {
+    height: 100%;
+    max-width: 200vw; /* LIMITA a largura máxima */
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+    display: block;
+}
+    
+    .right-decoration {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(15%);
+    width: 25%;
+    max-width: 200px;
+    height: auto;
+    z-index: 3;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+} 
+    /* Posições das bolas para mobile */
+    .ball-1 { top: 15%; left: 48%; }
+    .ball-2 { top: 28%; left: 47%; }
+    .ball-3 { top: 24%; left: 52%; }
+    .ball-4 { top: 38%; left: 42%; }
+    .ball-5 { top: 36%; left: 55%; }
+    .ball-6 { top: 50%; left: 38%; }
+    .ball-7 { top: 48%; left: 58%; }
+    .ball-8 { top: 40%; left: 48%; }
+    
+    .gift {
+        width: 40%;
+        bottom: 3vh;
+    }
+    
+    .right-decoration {
+        width: 35%;
+        right: 3%;
+        top: 45%;
+    }
+    
+    .title {
+        font-size: 8vw;
+        top: 3vh;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 2rem;
+    }
+    
+    .modal-photo-frame {
+        max-width: 250px;
+        height: 170px;
+    }
+
+    .carousel-container {
+        max-width: 280px;
+    }
+    
+    .carousel-slide {
+        height: 180px;
+    }
+
+    .angry-image {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tree-container {
+        height: 60vh;
+        margin-top: 30vh;
+        width:100%;
+    }
+    .tree {
+    height: 100%;
+    max-width: 200vw; /* LIMITA a largura máxima */
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+    display: block;
+}
+    
+    
+    .gift {
+        width: 45%;
+        bottom: -2vh;
+    }
+    
+    .right-decoration {
+        width: 40%;
+        right: 2%;
+    }
+    
+    .title {
+        font-size: 9vw;
+        top: 2vh;
+    }
+    
+    .modal-photo-frame {
+        max-width: 200px;
+        height: 140px;
+        border-width: 6px;
+    }
+
+    .carousel-container {
+        max-width: 230px;
+    }
+    
+    .carousel-slide {
+        height: 150px;
+    }
+    
+    .carousel-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    .angry-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .blocked-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .right-decoration {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(15%);
+    width: 40%;
+    max-width: 200px;
+    height: auto;
+    z-index: 3;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+} 
+    
+}
