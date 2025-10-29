@@ -678,6 +678,17 @@ body {
     z-index: 3;
     filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 } 
+.ball {
+    position: absolute;
+    width: 9%;
+    height: auto;
+    z-index: 5;
+    cursor: pointer;
+    animation: subtleGlow 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transform-origin: top center;
+    transition: all 0.3s ease;
+}
     
 }
 
@@ -704,7 +715,7 @@ body {
 
 .ball {
     position: absolute;
-    width: 7%;
+    width: 9%;
     height: auto;
     z-index: 5;
     cursor: pointer;
